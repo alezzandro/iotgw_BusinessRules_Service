@@ -44,7 +44,7 @@ public class App
 			messageFromQueue = consumer.run(2000);		
 			
 			if ( messageFromQueue != null ) {
-				
+		    System.out.println("messageFromQueue: "+messageFromQueue);
 	            // Convert TextMessage to DataSet via jaxb unmarshalling
 	            JAXBContext jaxbContext = JAXBContext.newInstance(DataSet.class);
 	            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
