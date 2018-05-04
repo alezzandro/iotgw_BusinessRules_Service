@@ -68,7 +68,10 @@ public class App
 	                if ( event.getErrorCode() != 0 ) 	
 					producer.run( event.asString() );
 		        System.out.println("----------------------");
-	                }
+			
+	                }else{
+			      System.out.println("Received a null message!");
+		        }
 	             
 	         
 		      } catch (Exception ex) {
