@@ -41,36 +41,41 @@ public class App
 		BRMSServer brmsServer = new BRMSServer();
 		
 		while ( true ) {
-			messageFromQueue = consumer.run(2000);		
+	            try {
+		      messageFromQueue = consumer.run(2000);		
 			
-			if ( messageFromQueue != null ) {
-				
-	            // Convert TextMessage to DataSet via jaxb unmarshalling
-	            JAXBContext jaxbContext = JAXBContext.newInstance(DataSet.class);
-	            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+		      if ( messageFromQueue != null ) {
+		        System.out.println("messageFromQueue: "+messageFromQueue);
+	                // Convert TextMessage to DataSet via jaxb unmarshalling
+	                JAXBContext jaxbContext = JAXBContext.newInstance(DataSet.class);
+	                Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 	
-	            StringReader reader = new StringReader( messageFromQueue );
-	            DataSet event = (DataSet) unmarshaller.unmarshal(reader);
+  	                StringReader reader = new StringReader( messageFromQueue );
+	                DataSet event = (DataSet) unmarshaller.unmarshal(reader);
 		
-	            event.setRequired(0);	
-	            event.setErrorCode(0);
+	                event.setRequired(0);	
+	                event.setErrorCode(0);
 	            
-	            System.out.println("Device-Type = " + event.getDeviceType());
-	            System.out.println("Device-ID   = " + event.getDeviceID());
-	            System.out.println("Payload     = " + event.getPayload());
+	                System.out.println("Device-Type = " + event.getDeviceType());
+	                System.out.println("Device-ID   = " + event.getDeviceID());
+	                System.out.println("Payload     = " + event.getPayload());
 	         
-            	event = brmsServer.insert( event);
+                        event = brmsServer.insert( event);
             	
-            	System.out.println("Result      = " + event.getErrorCode());
-            	System.out.println("----------------------");
+            	        System.out.println("Result      = " + event.getErrorCode());
+            	        System.out.println("----------------------");
                          
-	            if ( event.getErrorCode() != 0 ) {
-	            	
+	                if ( event.getErrorCode() != 0 ) 	
 					producer.run( event.asString() );
-					System.out.println("----------------------");
-
-	            }
-			}
-		}
-    } 
+		        System.out.println("----------------------");
+	                }
+	             
+	         
+		      } catch (Exception ex) {
+			ex.printStackTrace();
+			System.out.println(ex);
+			System.out.println(ex.getMessage());
+		      }
+                }
+    }
 }
